@@ -7,7 +7,7 @@ import uuid
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'NKYC!9t3t11Yz0@m*h2zIW_nlhIN_CnQQ^'
+app.secret_key = 'NKYC!9t3t11Yz0@m*h2zIW_nhIN_CnQQ^'
 MESSAGE_LIMIT = 10
 
 USERS_FILE = "users.json"
