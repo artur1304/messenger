@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ channel.name }}</title>
+</head>
+<body>
+    <h1>Канал: {{ channel.name }}</h1>
+    <div id="messages">
+        {% for message in channel.messages %}
+            <div>
+                [<b>{{ message.author }}</b>]: {{ message.text }} <i>{{ message.time }}</i>
+                {% if message.media %}
+                    <br>
+                    <img src="{{ url_for('media', filename=message.media) }}" alt="Media" style="max-width: 200px; max-height: 200px;">
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('send_message_channel', channel_id=channel.channel_id) }}" enctype="multipart/form-data">
+        <input type="text" name="text" placeholder="Введите сообщение..." required>
+        <input type="file" name="media">  <!-- Поле для загрузки медиафайла -->
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>
