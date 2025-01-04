@@ -15,6 +15,7 @@ CHATS_FILE = "chats.json"
 MESSAGES_FILE = "db.json"
 CHANNELS_FILE = "channels.json"  # Новый файл для хранения каналов
 MEDIA_FOLDER = 'media'  # Папка для хранения медиафайлов
+KEYS_FILE = "keys.json" # файл с ключами
 os.makedirs(MEDIA_FOLDER, exist_ok=True)  # Создаем папку, если она не существует
 
 
@@ -29,6 +30,19 @@ def load_users():
 def save_users(users):
     with open(USERS_FILE, "w") as file:
         json.dump(users, file)
+
+
+# функции для работы с ключами
+def load_keys():
+    if not os.path.exists(KEYS_FILE) or not os.path.getsize(KEYS_FILE) > 0:
+        return {}
+    with open(KEYS_FILE, "r") as file:      
+        return json.load(file)
+
+
+def save_keys(keys):
+    with open(KEYS_FILE, "w") as file:
+        json.dump(keys, file)
 
 
 # Функции для работы с чатами
@@ -126,12 +140,15 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        key = request.form["key"]
         users = load_users()
+        keys = load_keys()
 
         if username in users and bcrypt.checkpw(password.encode(), users[username]["password"].encode()):
-            session["username"] = username
-            return redirect(url_for("chat_page"))
-        return "Неверное имя пользователя или пароль.", 401
+            if username in keys and key == keys[username]:
+                session["username"] = username
+                return redirect(url_for("chat_page"))
+        return "Неверное имя пользователя, пароль или ключ доступа.", 401
 
     return render_template("login.html")
 
