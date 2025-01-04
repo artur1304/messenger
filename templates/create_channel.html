@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать канал</title>
+</head>
+<body>
+    <h1>Создать канал</h1>
+    <form method="POST">
+        <label for="channel_name">Название канала:</label>
+        <input type="text" name="channel_name" required><br>
+
+        <label for="admins">Выберите администраторов:</label><br>
+        {% for username in users %}
+        <input type="checkbox" name="admins" value="{{ username }}"> {{ username }}<br>
+        {% endfor %}
+
+        <button type="submit">Создать канал</button>
+    </form>
+</body>
+</html>
