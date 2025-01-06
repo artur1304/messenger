@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная 🌐</title>
+</head>
+<body>
+	<div id="username">
+		<h1>Привет {{ username }}!</h1>
+	</div>
+    <a href="{{ url_for('chat_page') }}">Чаты</a>
+    <br>
+    <a href="{{ url_for('channel_list') }}">Каналы</a>
+    <br>
+    <a href="{{ url_for('users_page') }}">Пользователи</a>
+</body>
+</html>
+
