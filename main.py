@@ -101,7 +101,9 @@ def save_channels(channels):
 # Главная страница
 @app.route("/")
 def main_page():
-    return "подробности в README"
+    if "username" in session:
+        return render_template("main.html", username=session["username"])
+    return render_template("main_no_user.html")
 
 
 # Регистрация
