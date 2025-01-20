@@ -1,9 +1,9 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ chat.name }}</title>
+    <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
     <style>
         .user-message {
             border: 1px solid #007bff;
@@ -17,18 +17,10 @@
 <body>
     <h1>Чат: {{ chat.name }}</h1>
     <div id="messages">
-        {% for message in messages %}
-            <div class="user-message">
-                <strong>{{ message.author }}:</strong> {{ message.text }} <em>{{ message.time }}</em>
-                {% if message.media %}
-                    <br>
-                    <img src="{{ url_for('media', filename=message.media) }}" alt="Media" style="max-width: 300px;">
-                {% endif %}
-            </div>
-        {% endfor %}
+        <!-- Messages will be loaded here -->
     </div>
 
-    <form action="{{ url_for('send_message', chat_id=chat.chat_id) }}" method="POST" enctype="multipart/form-data">
+    <form id="message-form" action="{{ url_for('send_message', chat_id=chat.chat_id) }}" method="POST" enctype="multipart/form-data">
         <textarea name="text" required placeholder="Ваше сообщение..." style="width: 100%; height: 60px;"></textarea>
         <br>
         <input type="file" name="media" accept="image/*,video/*">
@@ -37,5 +29,61 @@
     </form>
 
     <a href="{{ url_for('chat_page') }}">Назад к чатам</a>
+
+    /* MAGIC CODE HERE!! DONT TOUCH
+        |
+        v */
+    <script>
+        $(document).ready(function() {
+            function loadMessages() {
+                $.ajax({
+                    url: "{{ url_for('load_messages_route', chat_id=chat.chat_id) }}",
+                    method: "GET",
+                    success: function(data) {
+                        var messagesDiv = $("#messages");
+                        messagesDiv.empty();
+                        data.forEach(function(message) {
+                            var messageHtml = `
+                                <div class="user-message">
+                                    <strong>${message.author}:</strong> ${message.text} <em>${message.time}</em>
+                                    ${message.media ? `<br><img src="{{ url_for('media', filename='') }}${message.media}" alt="Media" style="max-width: 300px;">` : ''}
+                                </div>
+                            `;
+                            messagesDiv.append(messageHtml);
+                        });
+                    },
+                    error: function() {
+                        alert("Ошибка при загрузке сообщений");
+                    }
+                });
+            }
+
+            loadMessages();
+
+            setInterval(loadMessages, 500);
+
+            $("#message-form").submit(function(event) {
+                event.preventDefault(); 
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ url_for('send_message', chat_id=chat.chat_id) }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false, 
+                    success: function() {
+                        $("#message-form")[0].reset();
+                        loadMessages();
+                    },
+                    error: function() {
+                        alert("Ошибка при отправке сообщения");
+                    }
+                });
+            });
+        });
+    </script>
+    //magic code ends here 
 </body>
 </html>
