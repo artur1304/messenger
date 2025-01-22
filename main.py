@@ -18,7 +18,6 @@ MEDIA_FOLDER = 'media'  # Папка для хранения медиафайл�
 KEYS_FILE = "keys.json" # файл с ключами
 os.makedirs(MEDIA_FOLDER, exist_ok=True)  # Создаем папку, если она не существует
 
-
 # Функции для работы с пользователями
 def load_users():
     if not os.path.exists(USERS_FILE) or not os.path.getsize(USERS_FILE) > 0:
@@ -26,24 +25,20 @@ def load_users():
     with open(USERS_FILE, "r") as file:
         return json.load(file)
 
-
 def save_users(users):
     with open(USERS_FILE, "w") as file:
         json.dump(users, file)
-
 
 # функции для работы с ключами
 def load_keys():
     if not os.path.exists(KEYS_FILE) or not os.path.getsize(KEYS_FILE) > 0:
         return {}
-    with open(KEYS_FILE, "r") as file:      
+    with open(KEYS_FILE, "r") as file:
         return json.load(file)
-
 
 def save_keys(keys):
     with open(KEYS_FILE, "w") as file:
         json.dump(keys, file)
-
 
 # Функции для работы с чатами
 def load_chats():
@@ -52,26 +47,26 @@ def load_chats():
     with open(CHATS_FILE, "r") as file:
         return json.load(file)
 
-
 def save_chats(chats):
     with open(CHATS_FILE, "w") as file:
         json.dump(chats, file)
 
-
 # Функции для работы с сообщениями
-def load_messages(chat_id):
+def load_messages(chat_id, last_time=None):
     if not os.path.exists(MESSAGES_FILE) or not os.path.getsize(MESSAGES_FILE) > 0:
         return []
     with open(MESSAGES_FILE, "r") as file:
         data = json.load(file)
-    return data.get(str(chat_id), [])
-
+    messages = data.get(str(chat_id), [])
+    if last_time:
+        messages = [msg for msg in messages if msg["time"] > last_time]
+    return messages
 
 def save_message(chat_id, message):
     all_messages = load_messages(chat_id)
     all_messages.append(message)
 
-    # Загружаем существующие данные или инициализируем пустой словарь
+    # Загружаем существующие сообщения или инициализируем пустой словарь
     if not os.path.exists(MESSAGES_FILE) or os.path.getsize(MESSAGES_FILE) == 0:
         data = {}
     else:
@@ -84,7 +79,6 @@ def save_message(chat_id, message):
     with open(MESSAGES_FILE, "w") as file:
         json.dump(data, file)
 
-
 # Функции для работы с каналами
 def load_channels():
     if not os.path.exists(CHANNELS_FILE) or not os.path.getsize(CHANNELS_FILE) > 0:
@@ -92,11 +86,9 @@ def load_channels():
     with open(CHANNELS_FILE, "r") as file:
         return json.load(file)
 
-
 def save_channels(channels):
     with open(CHANNELS_FILE, "w") as file:
         json.dump(channels, file)
-
 
 # Главная страница
 @app.route("/")
@@ -104,7 +96,6 @@ def main_page():
     if "username" in session:
         return render_template("main.html", username=session["username"])
     return render_template("main_no_user.html")
-
 
 # Регистрация
 @app.route("/register", methods=["GET", "POST"])
@@ -135,7 +126,6 @@ def register():
 
     return render_template("register.html")
 
-
 # Вход
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -154,13 +144,11 @@ def login():
 
     return render_template("login.html")
 
-
 # Выход
 @app.route("/logout")
 def logout():
     session.pop("username", None)
     return redirect(url_for("main_page"))
-
 
 # Страница чатов
 @app.route("/chat")
@@ -170,7 +158,6 @@ def chat_page():
 
     chats = load_chats()
     return render_template("chat_list.html", chats=chats)
-
 
 # Создание чата
 @app.route("/create_chat", methods=["GET", "POST"])
@@ -199,7 +186,6 @@ def create_chat():
     users = load_users()
     return render_template("create_chat.html", users=users)
 
-
 # Просмотр чата
 @app.route("/chat/<chat_id>")
 def view_chat(chat_id):
@@ -216,9 +202,7 @@ def view_chat(chat_id):
     if username not in chat["participants"]:
         return "У вас нет доступа к этому чату", 403
 
-    messages = load_messages(chat_id)
-    return render_template("chat.html", chat=chat, messages=messages)
-
+    return render_template("chat.html", chat=chat)
 
 # Отправка сообщения
 @app.route("/send_message/<chat_id>", methods=["POST"])
@@ -261,20 +245,18 @@ def send_message(chat_id):
     save_message(chat_id, message)
     return redirect(url_for("view_chat", chat_id=chat_id))
 
-
 # Загрузка сообщений
 @app.route("/load_messages/<chat_id>")
 def load_messages_route(chat_id):
-    messages = load_messages(chat_id)
+    last_time = request.args.get("last_time")
+    messages = load_messages(chat_id, last_time)
     return jsonify(messages)
-
 
 # Страница пользователей
 @app.route("/users", methods=["GET"])
 def users_page():
     users = load_users()
     return render_template("users.html", users=users)
-
 
 # Профиль пользователя
 @app.route("/user/<username>")
@@ -286,7 +268,6 @@ def user_profile(username):
         return "Пользователь не найден", 404
 
     return render_template("user_profile.html", username=username, user_info=user_info)
-
 
 # Редактирование профиля
 @app.route("/edit_profile", methods=["GET", "POST"])
@@ -314,7 +295,6 @@ def edit_profile():
     user_info = users[username]
     return render_template("edit_profile.html", user_info=user_info)
 
-
 # Личные сообщения
 @app.route("/start_dm/<recipient_username>", methods=["GET", "POST"])
 def start_dm(recipient_username):
@@ -329,14 +309,12 @@ def start_dm(recipient_username):
 
     chats = load_chats()
 
-    # Проверка существования ЛС между 2-мя юзерами
-    existing_chat = next((c for c in chats if set(c["participants"]) == {current_user, recipient_username}), None)
+    dm_chat = next((c for c in chats if c["name"] == f"{recipient_username} и {current_user}" or c["name"] == f"{current_user} и {recipient_username}"), None)
 
-    if existing_chat:
-        return redirect(url_for("view_chat", chat_id=existing_chat["chat_id"]))
+    if dm_chat:
+        return redirect(url_for("view_chat", chat_id=dm_chat["chat_id"]))
 
     else:
-        # Создание нового чата
         chat_id = str(uuid.uuid4())
         chat = {
             "chat_id": chat_id,
@@ -349,7 +327,6 @@ def start_dm(recipient_username):
         save_chats(chats)
 
         return redirect(url_for("view_chat", chat_id=chat_id))
-
 
 # Создание канала
 @app.route("/create_channel", methods=["GET", "POST"])
@@ -379,7 +356,6 @@ def create_channel():
     users = load_users()
     return render_template("create_channel.html", users=users)
 
-
 # Просмотр канала
 @app.route("/channel/<channel_id>")
 def view_channel(channel_id):
@@ -393,7 +369,6 @@ def view_channel(channel_id):
         return "Канал не найден", 404
 
     return render_template("channel.html", channel=channel)
-
 
 # Отправка сообщения в канал
 @app.route("/send_message_channel/<channel_id>", methods=["POST"])
@@ -433,7 +408,6 @@ def send_message_channel(channel_id):
 
     return redirect(url_for("view_channel", channel_id=channel_id))
 
-
 # Страница со списком каналов
 @app.route("/channels")
 def channel_list():
@@ -443,12 +417,10 @@ def channel_list():
     channels = load_channels()
     return render_template("channel_list.html", channels=channels["channels"])
 
-
 # Маршрут для доступа к медиафайлам
 @app.route('/media/<path:filename>')
 def media(filename):
     return send_from_directory(MEDIA_FOLDER, filename)
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)

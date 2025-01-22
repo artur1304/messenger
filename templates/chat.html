@@ -12,6 +12,10 @@
             border-radius: 5px;
             background-color: #e7f3ff;
         }
+        video {
+            max-width: 300px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -30,27 +34,43 @@
 
     <a href="{{ url_for('chat_page') }}">Назад к чатам</a>
 
-    /* MAGIC CODE HERE!! DONT TOUCH
-        |
-        v */
+    <!-- MAGIC CODE!!! DONT TOUCH! -->
+
     <script>
         $(document).ready(function() {
+            let lastMessageTime = null;
+
             function loadMessages() {
                 $.ajax({
                     url: "{{ url_for('load_messages_route', chat_id=chat.chat_id) }}",
                     method: "GET",
+                    data: { last_time: lastMessageTime },
                     success: function(data) {
                         var messagesDiv = $("#messages");
-                        messagesDiv.empty();
                         data.forEach(function(message) {
+                            var mediaHtml = '';
+                            if (message.media) {
+                                var mediaUrl = "{{ url_for('media', filename='') }}" + message.media;
+                                var mediaId = "media-" + message.media; // Unique identifier for each media file
+                                if (!$(`#${mediaId}`).length) { // Check if the media element already exists
+                                    if (message.media.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                                        mediaHtml = `<br><img id="${mediaId}" src="${mediaUrl}" alt="Media" style="max-width: 300px;">`;
+                                    } else if (message.media.match(/\.(mp4|webm|ogg)$/i)) {
+                                        mediaHtml = `<br><video id="${mediaId}" controls><source src="${mediaUrl}" type="video/${message.media.split('.').pop()}">Ваш браузер не поддерживает тег video.</video>`;
+                                    }
+                                }
+                            }
                             var messageHtml = `
                                 <div class="user-message">
                                     <strong>${message.author}:</strong> ${message.text} <em>${message.time}</em>
-                                    ${message.media ? `<br><img src="{{ url_for('media', filename='') }}${message.media}" alt="Media" style="max-width: 300px;">` : ''}
+                                    ${mediaHtml}
                                 </div>
                             `;
                             messagesDiv.append(messageHtml);
                         });
+                        if (data.length > 0) {
+                            lastMessageTime = data[data.length - 1].time;
+                        }
                     },
                     error: function() {
                         alert("Ошибка при загрузке сообщений");
@@ -60,10 +80,10 @@
 
             loadMessages();
 
-            setInterval(loadMessages, 500);
+            setInterval(loadMessages, 1000);
 
             $("#message-form").submit(function(event) {
-                event.preventDefault(); 
+                event.preventDefault();
 
                 var formData = new FormData(this);
 
@@ -72,7 +92,7 @@
                     method: "POST",
                     data: formData,
                     processData: false,
-                    contentType: false, 
+                    contentType: false,
                     success: function() {
                         $("#message-form")[0].reset();
                         loadMessages();
@@ -84,6 +104,5 @@
             });
         });
     </script>
-    //magic code ends here 
 </body>
 </html>
