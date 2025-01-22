@@ -32,7 +32,7 @@ def save_users(users):
 name = input()
 users = load_users()
 keys = load_keys()
-if name in users:
+if name in keys:
 	print(keys[name])
 else:										# кейген и проверка на существование ключа
 	key = random.randint(0, 
