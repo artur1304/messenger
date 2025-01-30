@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+</head>
+<body>
+
+
+    <form action="{{ url_for('register') }}" method="POST">
+        <label for="username"><div class="form-container">Имя пользователя</div></label>
+        <input type="text" name="username" required>
+        <br>
+        <label for="password"><div class="form-container">Пароль</div></label>
+        <input type="password" name="password" required>
+        <br>
+        <label for="first_name"><div class="form-container">Имя</div></label>
+        <input type="text" name="first_name" required>
+        <br>
+        <label for="last_name"><div class="form-container">Фамилия</div></label>
+        <input type="text" name="last_name" required>
+        <br>
+        <label for="age"><div class="form-container">Возраст</div></label>
+        <input type="number" name="age" required>
+        <br>
+        <label for="about_me"><div class="form-container">О себе</div></label>
+        <textarea name="about_me"></textarea>
+        <br>
+        <button type="submit"><div class="form-container">Зарегистрироватся</div></button>
+    </form>
+
+ <a href="{{ url_for('login') }}"><sos>Уже есть аккаунт? Войти</sos></a>
+</body>
+</html>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-image: url('https://sun9-38.userapi.com/s/v1/ig2/henmlpxlLSoxD1RWFFd61xfmYROla746Tegv31vBIXn_LE6rbWv6VOrxHgvHAIbybMu1eYIRiyvXIK2leoAkOFk5.jpg?quality=95&as=32x18,48x27,72x40,108x61,160x90,240x135,360x202,480x270,540x304,640x360,720x405,1080x607,1280x720,1440x810,2560x1440&from=bu&u=dm4TJv0Ra4a09v6am9xiY_FfnEca40dpB2VRefLcj6U&cs=2560x1440'); /* Используйте изображение космического пространства */
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.form-container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+
+button[type="submit"] {
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+a {
+    display: block;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    margin-top: 20px;
+    text-align: center;
+    transition: color 0.3s ease;
+
+}
+
+a:hover {
+    color: #00FFFF;
+}
+
+
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 40%, transparent 80%, rgba(255, 255, 255, 0.05) 90%) 0 0,
+                radial-gradient(circle at 60% 70%, transparent 85%, rgba(255, 255, 255, 0.03) 95%) 10px 10px,
+                radial-gradient(circle at 45% 35%, transparent 65%, rgba(255, 255, 255, 0.07) 77%) 15px 15px,
+                radial-gradient(circle at 55% 23%, transparent 82%, rgba(255, 255, 255, 0.04) 92%) 18px 18px,
+                radial-gradient(circle at 88% 44%, transparent 72%, rgba(255, 255, 255, 0.06) 83%) 22px 22px,
+                linear-gradient(#000, #111);
+    background-size: 150px 150px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+sos {
+    display: inline-block;
+    transform: translate(0px, 390px);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+    }
+
+
+</style>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Главная 🌐</title>
+</head>
+<body>
+    <h1>Здравствуйте!</h1>
+    <a href="{{ url_for('register') }}">Нет аккаунта? Зарегистрироваться </a>
+    <br>
+    <a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a>
+</body>
+</html>
+
+<style>
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-image: url('https://sun9-38.userapi.com/s/v1/ig2/henmlpxlLSoxD1RWFFd61xfmYROla746Tegv31vBIXn_LE6rbWv6VOrxHgvHAIbybMu1eYIRiyvXIK2leoAkOFk5.jpg?quality=95&as=32x18,48x27,72x40,108x61,160x90,240x135,360x202,480x270,540x304,640x360,720x405,1080x607,1280x720,1440x810,2560x1440&from=bu&u=dm4TJv0Ra4a09v6am9xiY_FfnEca40dpB2VRefLcj6U&cs=2560x1440'); /* Используйте изображение космического пространства */
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    }
+
+
+    h1 {
+        font-size: 4em;
+        text-align: center;
+        margin-bottom: 50px;
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.75);
+    }
+
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        font-size: 18px;
+        border: 2px solid white;
+        padding: 12px 24px;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+    }
+
+    a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    }
+
+
+    .stars {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 40%, transparent 80%, rgba(255, 255, 255, 0.05) 90%) 0 0,
+                    radial-gradient(circle at 60% 70%, transparent 85%, rgba(255, 255, 255, 0.03) 95%) 10px 10px,
+                    radial-gradient(circle at 45% 35%, transparent 65%, rgba(255, 255, 255, 0.07) 77%) 15px 15px,
+                    radial-gradient(circle at 55% 23%, transparent 82%, rgba(255, 255, 255, 0.04) 92%) 18px 18px,
+                    radial-gradient(circle at 88% 44%, transparent 72%, rgba(255, 255, 255, 0.06) 83%) 22px 22px,
+                    linear-gradient(#000, #111);
+        background-size: 150px 150px;
+    }
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        font-size: 18px;
+        border: 2px solid white;
+        padding: 12px 24px;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    a:hover {
+        background-color: rgba(255, 255, 255);
+        box-shadow: 0 0 15px rgba(255, 255, 255);
+    }
+
+</style>
